@@ -64,26 +64,6 @@ if($modified || $untracked) {
 	$notify = true;
 }
 
-if ( !is_dir(__DIR__ . '/.git') && !empty(self::$cfg->repo) ) {
-	unlink(__DIR__ . '/config.json');
-	unlink(__DIR__ . '/deploy.php');
-
-	echo "\ngit clone " . self::$cfg->repo . "\n",
-	shell_exec('git clone ' . self::$cfg->repo . ' . 2>&1');
-
-	echo "\nOk.</pre>";
-} elseif ( is_dir(__DIR__ . '/.git') ) {
-	$pullresult = shell_exec('git pull origin ' . self::$cfg->branch . ' 2>&1');
-	echo "\ngit pull origin " . self::$cfg->branch . "\n",
-	$pullresult;
-
-	if(strpos($pullresult, 'Aborting') !== false) $notify = 2;
-
-	echo "\nOk.</pre>";
-} else {
-	echo "\nError.</pre>";
-}
-
 if($notify && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
 	if(!$modified)        $message = "There are files on server at ".$_SERVER['HTTP_HOST']." that needs to be added to the code repo: <http://".$_SERVER['HTTP_HOST'].'/deploy.php?auth='.self::$cfg->auth.'&status|View details>';
@@ -111,13 +91,20 @@ if($notify && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
 class Kraken
 {
-	private static $cfg;
+	public static $cfg;
+
+	public static $log;
 
 	public static function start()
 	{
 		if ( !self::getCfg() ) self::unauthorizedDeploy();
 
 		if ( !self::checkAuth() ) self::unauthorizedDeploy();
+
+	}
+
+	public static function log( $message )
+	{
 
 	}
 
@@ -148,5 +135,34 @@ class Kraken
 		header("HTTP/1.0 401 Unauthorized");
 
 		exit;
+	}
+}
+
+class KrakenGit
+{
+	public static function update()
+	{
+
+		if ( !is_dir(__DIR__ . '/.git') && !empty(Kraken::$cfg->repo) ) {
+			unlink(__DIR__ . '/config.json');
+			unlink(__DIR__ . '/deploy.php');
+
+			echo "\ngit clone " . Kraken::$cfg->repo . "\n",
+
+			shell_exec('git clone ' . Kraken::$cfg->repo . ' . 2>&1');
+
+			echo "\nOk.</pre>";
+		} elseif ( is_dir(__DIR__ . '/.git') ) {
+			$pullresult = shell_exec('git pull origin ' . Kraken::$cfg->branch . ' 2>&1');
+
+			echo "\ngit pull origin " . Kraken::$cfg->branch . "\n", $pullresult;
+
+			if(strpos($pullresult, 'Aborting') !== false) $notify = 2;
+
+			echo "\nOk.</pre>";
+		} else {
+			echo "\nError.</pre>";
+		}
+
 	}
 }

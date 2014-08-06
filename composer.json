@@ -1,0 +1,23 @@
+{
+	"name" : "daviddeutsch/kraken",
+	"description" : "ARR THE KRAKEN",
+	"authors" : [{
+		"name" : "David Deutsch",
+		"email" : "skore@valanx.org",
+		"homepage" : "http://valanx.org",
+		"role" : "Chief Botanist"
+	}
+	],
+	"keywords" : [],
+	"license" : "GPL-3.0+",
+	"minimum-stability": "dev",
+	"require" : {
+		"php" : ">=5.3",
+		"daviddeutsch/saltwater": "dev-master"
+	},
+	"autoload" : {
+		"psr-0" : {
+			"Kraken\\" : "/src/Kraken"
+		}
+	}
+}
