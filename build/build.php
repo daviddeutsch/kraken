@@ -33,11 +33,33 @@ $phar = new Phar($target, 0, 'kraken.phar');
 
 $phar->buildFromDirectory($tmp);
 
+/*$phar->setStub(
+'<?php
+Phar::interceptFileFuncs();
+Phar::mungServer(array(\'REQUEST_URI\'));
+Phar::webPhar(null, __DIR__ . \'/src/index.php\');
+__HALT_COMPILER(); ?>'
+);*/
+
 $phar->setStub(
 	$phar->createDefaultStub('src/index.php', 'src/index.php')
 );
 
 rrmdir(__DIR__ . '/tmp');
+
+$phar2 = new PharData(__DIR__ . '/../dist/ui.zip');
+
+$phar2->buildFromDirectory(__DIR__ . '/../ui');
+
+$live = __DIR__ . '/../live';
+
+if (is_dir($live)) rrmdir($live);
+
+mkdir($live, 0755);
+
+copy(__DIR__ . '/../dist/kraken.phar', __DIR__ . '/../live/kraken.phar');
+
+rcopy(__DIR__ . '/../ui', $live);
 
 function rrmdir( $path )
 {

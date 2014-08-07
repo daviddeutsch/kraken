@@ -12,7 +12,7 @@ class Kraken extends Module
 
 	protected $provide = array(
 		'provider' => array(
-
+			'authentication', 'config', 'log', 'route'
 		),
 		'context' => array(
 			'Kraken'

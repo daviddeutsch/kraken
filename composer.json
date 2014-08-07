@@ -16,8 +16,8 @@
 		"daviddeutsch/saltwater": "dev-master"
 	},
 	"autoload" : {
-		"psr-0" : {
-			"Kraken\\" : "/src/Kraken"
+		"psr-4" : {
+			"Kraken\\" : "src/Kraken"
 		}
 	}
 }
